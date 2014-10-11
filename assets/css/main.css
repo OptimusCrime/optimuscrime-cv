@@ -47,9 +47,13 @@ a:hover, a:hover {
     line-height: 30px;
 }
 #contact {
+    padding-right: 0px;
     padding-top: 96px;
     line-height: 20px;
-    font-size: 13px;
+    font-size: 12px;
+}
+#contact > div {
+    padding: 0px;
 }
 .contact-right {
     text-align: right;
