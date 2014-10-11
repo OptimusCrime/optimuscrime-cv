@@ -14,7 +14,7 @@ body {
 }
 
 body.grid {
-    background-image: url(../images/grid.png);
+    background-image: url(images/grid.png);
 }
 
 h1 {
@@ -66,7 +66,7 @@ a:link:hover, a:visited:hover {
     width: 950px;
     padding: 40px 0 59px;
     margin: 0 auto;
-    background: url(../images/line.png) repeat-x 0 bottom;
+    background: url(images/line.png) repeat-x 0 bottom;
     overflow: hidden;
 }
 
@@ -140,7 +140,7 @@ a:link:hover, a:visited:hover {
     width: 950px;
     margin: 0 auto;
     padding: 20px 0;
-    background: url(../images/line.png) repeat-x 0 bottom;
+    background: url(images/line.png) repeat-x 0 bottom;
     overflow: hidden;
 }
 
@@ -179,7 +179,7 @@ a:link:hover, a:visited:hover {
     margin-bottom: 9px;
     position: relative;
     padding-bottom: 5px;
-    background: url(../images/separator.png) no-repeat 0 bottom;
+    background: url(images/separator.png) no-repeat 0 bottom;
 }
 
 .section .description {
