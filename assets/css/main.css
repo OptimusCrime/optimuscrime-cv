@@ -47,10 +47,10 @@ a:hover, a:hover {
     line-height: 30px;
 }
 #contact {
-    padding-right: 0px;
     padding-top: 96px;
     line-height: 20px;
     font-size: 12px;
+    max-width: 420px;
 }
 #contact > div {
     padding: 0px;
@@ -60,7 +60,8 @@ a:hover, a:hover {
     color: #3c3c3c;
 }
 #picture {
-    text-align: right;
+    text-align: center;
+    padding-bottom: 10px;
 }
 .section {
     margin: 0 auto;
@@ -74,9 +75,10 @@ a:hover, a:hover {
     line-height: 22px;
 }
 .section h3 {
-    line-height: 22px;
+    line-height: 27px;
     margin-bottom: 5px;
     font-style: italic;
+    margin-right: 120px;
 }
 .section h4 {
     margin-bottom: 20px;
@@ -89,9 +91,11 @@ a:hover, a:hover {
     position: absolute;
     top: 6px;
     right: 0;
+    width: 120px;
+    text-align: right;
 }
 .section .item {
-    padding-left: 50px;
+    padding-left: 20px;
     padding-top: 0;
     margin-bottom: 9px;
     position: relative;
@@ -99,5 +103,9 @@ a:hover, a:hover {
     background: url(gfx/separator.png) no-repeat 0 bottom;
 }
 @media(max-width:767px) {
-    
+    #contact {
+        padding-top: 0px;
+        margin: 0 auto;
+        float: none;
+    }
 }
