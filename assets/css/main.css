@@ -33,7 +33,7 @@ a:hover, a:hover {
 }
 #about {
     margin: 0 auto;
-    background: url(gfx/line.png) repeat-x 0 bottom;
+    border-bottom: 1px solid #ccc;
     padding-bottom: 20px;
 }
 #about h2 {
@@ -47,26 +47,29 @@ a:hover, a:hover {
     line-height: 30px;
 }
 #contact {
-    padding-top: 96px;
+    padding-top: 72px;
     line-height: 20px;
-    font-size: 12px;
+    font-size: 13px;
     max-width: 420px;
 }
-#contact > div {
-    padding: 0px;
+#contact i {
+    margin-right: 12px;
+    position: absolute;
+    left: 0px;
+    top: 2px;
 }
-.contact-right {
-    text-align: right;
-    color: #3c3c3c;
+#contact strong {
+    color: #000;
+    padding-left: 10px;
 }
 #picture {
     text-align: center;
-    padding-bottom: 10px;
+    padding-top: 77px;
 }
 .section {
     margin: 0 auto;
     padding: 20px 0;
-    background: url(gfx/line.png) repeat-x 0 bottom;
+    border-bottom: 1px solid #ccc;
     overflow: hidden;
 }
 .section h2 {
@@ -94,18 +97,72 @@ a:hover, a:hover {
     width: 120px;
     text-align: right;
 }
-.section .item {
+.item {
     padding-left: 20px;
     padding-top: 0;
-    margin-bottom: 9px;
+    margin-bottom: 25px;
     position: relative;
-    padding-bottom: 5px;
-    background: url(gfx/separator.png) no-repeat 0 bottom;
+    border-left: 1px solid #ccc;
+}
+@media(max-width:970px) {
+    .item {
+        border-left: none;
+        padding-left: 0px;
+    }
+    #picture, #contact {
+        padding-top: 20px;
+    }
 }
 @media(max-width:767px) {
-    #contact {
-        padding-top: 0px;
-        margin: 0 auto;
-        float: none;
+    #picture {
+        padding-top: 20px;
     }
+    #contact {
+        text-align: center;
+        max-width: none;
+        padding-top: 20px;
+    }
+    #contact i {
+        position: relative;
+        top: auto;
+        left: auto;
+    }
+    #contact strong {
+        padding-left: 0px;
+    }
+}
+.logo-ntnu::before {
+     content: url('gfx/ntnu.png');
+     position: absolute;
+     left: -50px;
+}
+.logo-ringerike::before {
+     content: url('gfx/ringerike.png');
+     position: absolute;
+     left: -50px;
+}
+.logo-catchmedia::before {
+     content: url('gfx/catch.png');
+     position: absolute;
+     left: -50px;
+}
+.logo-ringeriksbadet::before {
+     content: url('gfx/ringeriksbadet.png');
+     position: absolute;
+     left: -50px;
+}
+.logo-utvikacamping::before {
+     content: url('gfx/utvikacamping.png');
+     position: absolute;
+     left: -50px;
+}
+.logo-online::before {
+     content: url('gfx/online.png');
+     position: absolute;
+     left: -50px;
+}
+.logo-battlefield::before {
+     content: url('gfx/battlefieldno.png');
+     position: absolute;
+     left: -50px;
 }
