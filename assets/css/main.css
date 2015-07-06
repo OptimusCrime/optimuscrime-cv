@@ -72,6 +72,12 @@ a:hover, a:hover {
     border-bottom: 1px solid #ccc;
     overflow: hidden;
 }
+.section:last-child {
+    border-bottom: none;
+}
+.section:last-child > div .item:last-child {
+    margin-bottom: 0px;
+}
 .section h2 {
     padding-right: 30px;
     padding-top: 0;
@@ -104,33 +110,6 @@ a:hover, a:hover {
     margin-bottom: 25px;
     position: relative;
     border-left: 1px solid #ccc;
-}
-@media(max-width:970px) {
-    .item {
-        border-left: none;
-        padding-left: 0px;
-    }
-    #picture, #contact {
-        padding-top: 20px;
-    }
-}
-@media(max-width:767px) {
-    #picture {
-        padding-top: 20px;
-    }
-    #contact {
-        text-align: center;
-        max-width: none;
-        padding-top: 20px;
-    }
-    #contact i {
-        position: relative;
-        top: auto;
-        left: auto;
-    }
-    #contact strong {
-        padding-left: 0px;
-    }
 }
 .logo-ntnu::before {
      content: url('gfx/ntnu.png');
@@ -166,4 +145,51 @@ a:hover, a:hover {
      content: url('gfx/battlefieldno.png');
      position: absolute;
      left: -50px;
+}
+#footer {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 20px;
+    font-size: 12px;
+}
+#footer ul {
+    list-style-type: none;
+}
+#footer li {
+    display: inline-block;
+}
+#footer li::after {
+    content: "::";
+    padding-left: 5px;
+    padding-right: 5px;
+}
+#footer li:last-child::after {
+    content: none;
+}
+@media(max-width:970px) {
+    .item {
+        border-left: none;
+        padding-left: 0px;
+    }
+    #picture, #contact {
+        padding-top: 20px;
+    }
+}
+@media(max-width:767px) {
+    #picture {
+        padding-top: 20px;
+    }
+    #contact {
+        text-align: center;
+        max-width: none;
+        padding-top: 20px;
+    }
+    #contact i {
+        position: relative;
+        top: auto;
+        left: auto;
+    }
+    #contact strong {
+        padding-left: 0px;
+    }
 }
