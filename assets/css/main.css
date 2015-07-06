@@ -1,6 +1,7 @@
 body {
     font: 14px/20px Georgia, "Times New Roman", Times, serif;
     color: #848484;
+    background-image: url("gfx/paperfiber.png");
 }
 h1 {
     font-size: 41px;
@@ -111,38 +112,38 @@ a:hover, a:hover {
     position: relative;
     border-left: 1px solid #ccc;
 }
-.logo-ntnu::before {
-     content: url('gfx/ntnu.png');
+.icon-ntnu::before {
+     content: url('gfx/icons/ntnu.png');
      position: absolute;
      left: -50px;
 }
-.logo-ringerike::before {
-     content: url('gfx/ringerike.png');
+.icon-ringerike::before {
+     content: url('gfx/icons/ringerike.png');
      position: absolute;
      left: -50px;
 }
-.logo-catchmedia::before {
-     content: url('gfx/catch.png');
+.icon-catchmedia::before {
+     content: url('gfx/icons/catch.png');
      position: absolute;
      left: -50px;
 }
-.logo-ringeriksbadet::before {
-     content: url('gfx/ringeriksbadet.png');
+.icon-ringeriksbadet::before {
+     content: url('gfx/icons/ringeriksbadet.png');
      position: absolute;
      left: -50px;
 }
-.logo-utvikacamping::before {
-     content: url('gfx/utvikacamping.png');
+.icon-utvikacamping::before {
+     content: url('gfx/icons/utvikacamping.png');
      position: absolute;
      left: -50px;
 }
-.logo-online::before {
-     content: url('gfx/online.png');
+.icon-online::before {
+     content: url('gfx/icons/online.png');
      position: absolute;
      left: -50px;
 }
-.logo-battlefield::before {
-     content: url('gfx/battlefieldno.png');
+.icon-battlefield::before {
+     content: url('gfx/icons/battlefield.png');
      position: absolute;
      left: -50px;
 }
