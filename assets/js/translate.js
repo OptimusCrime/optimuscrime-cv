@@ -12,6 +12,12 @@ var Translate = (function () {
 
     // Time it should take to translate everything (in ms)
     var translate_time = 1000;
+
+    // Translation tick timeout
+    var translate_tick_timeout = 5;
+
+    // Keeps track of the current tick index
+    var translate_tick_index = 0;
     
     /**
      * Start the translation to a language
@@ -20,10 +26,12 @@ var Translate = (function () {
     var translate = function(lang) {
         // Set the data
         translate_set_data(lang);
+
+        // Reset tick index
+        translate_tick_index = 0;
         
         // Start the interval
-        translate_tick();
-        translate_interval = setInterval(translate_tick, 400);
+        translate_interval = setInterval(translate_tick, translate_tick_timeout);
     };
 
     /**
@@ -38,12 +46,20 @@ var Translate = (function () {
         for (var i = 0; i < translate_data.length; i++) {
             // Shortcut
             var current_data = translate_data[i];
+
+            // Check if we need to calculate interval values
+            if (translate_tick_index === 0) {
+                calculate_tick_interval(current_data);
+            }
             
             // Only handle translations still running
-            if (!current_data.finished) {
-                // Handle tick
-                handle_tick(current_data);
-                
+            if (!current_data.finished) { 
+                // Check if we should run this tick
+                if (use_tick(current_data)) {
+                    // Handle tick
+                    handle_tick(current_data);
+                }
+
                 // Check if we are finished
                 if (!translation_finished(current_data)) {
                     // Set still running to true to run a new tick
@@ -56,6 +72,35 @@ var Translate = (function () {
         if (!still_running) {
             clearInterval(translate_interval);
         }
+
+        // Increase tick index by one
+        translate_tick_index++;
+    }
+
+    /**
+     * Checks if the current translation data should use the current tick or wait
+     */
+
+    var use_tick = function(data) {
+        return (translate_tick_index % data.interval) === 0;
+    }
+
+    /**
+     * Method for calculating how often the translation for this data should be done
+     */
+
+    var calculate_tick_interval = function(data) {
+        // Get the number of ticks in total
+        var number_of_ticks = translate_time / translate_tick_timeout;
+
+        // Get the maximum length of things to remove/add
+        var maximum_handle_length = Math.max(data.original.length, $('<div>' + data.to + '</div>').text().length);
+
+        // Calculate interval
+        var interval = Math.ceil(number_of_ticks / maximum_handle_length);
+
+        // Finally set the interval
+        data.interval = interval;
     }
 
     /**
@@ -64,43 +109,181 @@ var Translate = (function () {
 
     var handle_tick = function(current_data) {
         // Check if we should add/remove the container elements
-        if (current_data.cursors.add[0].current_position === 0) {
+        if (translate_tick_index === 0) {
             // Build the container markup
             build_container_markup(current_data);
         }
-        
+
+        // Handle adding of content
+        handle_tick_add(current_data);
+
+        // Handle removing of content
+        handle_tick_remove(current_data);        
+    }
+
+    /**
+     * Handle adding of content for a single tick
+     */
+
+    var handle_tick_add = function(data) {
+        // Check if we are finished running add
+        if ($(data.selector + ' span.add').html().length === data.to.length) {
+            return;
+        }
+
         // Get the add content
-        var add_content = $(current_data.selector + ' span.add').get(0).outerHTML;
+        var add_content = $(data.selector + ' span.add').get(0).outerHTML;
         var add_content_length = add_content.length;
-        
-        // Add the new letter
-        var new_content_letter = current_data.to.substr(current_data.cursors.add[0].current_position, 1);
-        var add_content_new = add_content.substr(0, add_content_length - 7) + new_content_letter + '</span>';
-
-        var cursor_content = $(current_data.selector + ' span.cursor').get(0).outerHTML;
-
-        // Get the remove content
-        var remove_content = $(current_data.selector + ' span.remove').get(0).outerHTML;
-
-        // Add content
-        $(current_data.selector).html(add_content_new + cursor_content + remove_content);
-
-        // Update the content
-        current_data.cursors.add[0].current_position++;
-
-        //
-        // ====================================================================
-        //
 
         // Get the actual cursor object
-        var remove_cursor = current_cursor(current_data.cursors.remove[0]);
+        var add_cursor = current_cursor(data.cursors.add[0]);
 
         // Check if we need to handle children
         while (true) {
-            if (remove_cursor.children === null) {
-                console.log('Now');
+            // Check if we should look for new children
+            if (add_cursor.children === null) {
                 // Find all the children of the current cursor
-                find_children_elements(remove_cursor);
+                find_child_elements_add(data, add_cursor);
+                
+                // Check if we need to switch at once (nested content directly)
+                var switch_add = false;
+
+                // Loop all the known children
+                for (var j = 0; j < add_cursor.children.length; j++) {
+                    // If any child has a position of 0 we should switch to that one right away
+                    if (add_cursor.children[j].position === 0) {
+                        // Indicate a switch
+                        switch_add = true;
+
+                        // Set the current cursor to inactive and the child to active
+                        add_cursor.current = false;
+                        add_cursor.children[j].current = true;
+
+                        // If not already built, add dom node for the child
+                        if ($(add_cursor.children[j].selector).length === 0) {
+                            // Add the entire content
+                            $(add_cursor.selector).append(add_cursor.children[j].markup);
+
+                            // Empty the content
+                            $(add_cursor.children[j].selector).html('');
+                        }
+
+                        // Update reference to current add cursor
+                        add_cursor = add_cursor.children[j];
+
+                        // Break out of the inner loop
+                        break;
+                    }
+                }
+
+                // Support for multiple switches
+                if (!switch_add) {
+                    break;
+                }
+            }
+            else {
+                // Children are either already fetched, or there are no more children
+                break;
+            }
+        }
+
+        // Add new content from the current cursor
+        $(add_cursor.selector).append(add_cursor.markup_inside.substr(add_cursor.current_position, 1));
+
+        // Check if we are done with the current node
+        if ($(add_cursor.selector).html().length === add_cursor.markup_inside.length) {
+            // Make sure to keep the root element
+            if (data.selector + ' span.add' === add_cursor.selector) {
+                return;
+            }
+
+            // Keep track of content to remove from the parent selector
+            var content_to_compensate = '';
+
+            // Check if we should switch outwards
+            current_parent = data.cursors.add[0];
+
+            // Endless outwards
+            while (true) {
+                // Loop children
+                var found = false;
+                for (var j = 0; j < current_parent.children.length; j++) {
+                    if (current_parent.children[j].selector === add_cursor.selector) {
+                        content_to_compensate = current_parent.children[j].markup;
+                        current_parent.children.splice(j, 1);
+                        current_parent.current = true;
+                        found = true;
+                        break;
+                    }
+                }
+
+                // If we found the parent, break out of the loop
+                if (found) {
+                    break;
+                }
+                else {
+                    // No parent, look at the first child
+                    current_parent = current_parent.children[0];
+                }
+            }
+
+            // Increase the current position
+            current_parent.current_position += content_to_compensate.length;
+        }
+        else {
+            // Increase the cursor position
+            add_cursor.current_position++;
+
+            // Check if we should switch cursor inwards
+            var switched_cursor = false;
+
+            // Loop all the children
+            for (var j = 0; j < add_cursor.children.length; j++) {
+                // Check if the current child's position matches the cursor's position
+                if (add_cursor.children[j].position == add_cursor.current_position) {
+                    // Switch cursor, a new element was found at this location
+                    switched_cursor = true;
+
+                    // Activate child
+                    add_cursor.children[j].current = true
+
+                    // Create element for child
+                    $(add_cursor.selector).append(add_cursor.children[j].markup);
+
+                    // Empty the content
+                    $(add_cursor.children[j].selector).html('');
+
+                    // Break out of the current loop
+                    break;
+                }
+            }
+
+            // If we switched cursor, make sure to deactivate the current parent
+            if (switched_cursor) {
+                add_cursor.current = false;
+            }
+        }
+    }
+
+    /**
+     * Handle removing of content for a single tick
+     */
+
+    var handle_tick_remove = function(data) {
+        // Check if we are finished running remove
+        if ($(data.selector + ' span.remove').length === 0) {
+            return;
+        }
+
+        // Get the actual cursor object
+        var remove_cursor = current_cursor(data.cursors.remove[0]);
+
+        // Check if we need to handle children
+        while (true) {
+            // Check if we should look for new children
+            if (remove_cursor.children === null) {
+                // Find all the children of the current cursor
+                find_child_elements_remove(remove_cursor);
 
                 // Check if we need to switch at once (nested content directly)
                 var switch_remove = false;
@@ -115,11 +298,13 @@ var Translate = (function () {
                     }
                 }
 
+                // Support for multiple switches
                 if (!switch_remove) {
                     break;
                 }
             }
             else {
+                // Children are either already fetched, or there are no more children
                 break;
             }
         }
@@ -135,7 +320,12 @@ var Translate = (function () {
             // Empty node, remove node
             $(remove_cursor.selector).remove();
 
-            current_parent = current_data.cursors.remove[0];
+            // Check if there are any remove spans left (or we are done)
+            if ($(data.selector + ' span.remove').length === 0) {
+                return;
+            }
+
+            current_parent = data.cursors.remove[0];
             while (true) {
                 // Loop children
                 var found = false;
@@ -196,7 +386,7 @@ var Translate = (function () {
 
     var translation_finished = function(data) {
         // Validate that remove is empty and that add is the same length as to
-        if ($(data.cursors.remove[0].selector).html().length === 0 && 
+        if ($(data.selector + ' span.remove').length === 0 && 
             $(data.cursors.add[0].selector).html().length === data.to.length) {
             // We are finished!
             data.finished = true;
@@ -216,7 +406,7 @@ var Translate = (function () {
      * Returns the current cursor by traversing the cursors with a depth first approach
      */
 
-    var current_cursor = function (list) {
+    var current_cursor = function(list) {
         var current_list_object = list;
         while (true) {
             if (current_list_object.current) {
@@ -260,46 +450,92 @@ var Translate = (function () {
                             'position': 0,
                             'current_position': 0,
                             'selector': current_string.selector + ' span.add',
+                            'to_selector': 'div',
                             'current': true,
                             'skip': false,
-                            'children': null
+                            'children': null,
+                            'markup_inside': current_string[lang]
                         }  
                     ],
                 },
                 'selector': current_string.selector,
                 'original': $(current_string.selector).html(),
-                'to': current_string[lang]
+                'to': current_string[lang],
+                'interval': null
             })
         }
     }
 
     /**
-     * Takes a cursor and finds the cursors children
+     * Takes a cursor and finds the cursors children for the add functionality
      */
 
-    var find_children_elements = function(current_cursor) {
+    var find_child_elements_add = function(data, cursor) {
+        // Get the start index
+        var start_index = 0;
+        var subtract = 5;
+
+        var $to_element = $('<div><div>' + cursor.markup_inside + '</div></div>');
+
+        // Get all direct children of the current element
+        var children = $to_element.find(cursor.to_selector).children();
+
+        // Create array for children
+        cursor.children = [];
+
+        // Loop all the direct children
+        for (var i = 0; i < children.length; i++) {
+            // Get the current index
+            var this_index = $to_element.html().substr(start_index).indexOf(children[i].outerHTML);
+
+            // Add to cursor
+            cursor.children.push({
+                'position': start_index + this_index - subtract,
+                'current_position': 0,
+                'selector': cursor.selector + ' > *:eq(0)',
+                'to_selector': 'div',
+                'markup': children[i].outerHTML,
+                'markup_inside': children[i].innerHTML,
+                'current': false,
+                'skip': children[i].innerHTML.length === 0,
+                'children': null
+            });
+
+            // Add to subtract
+            subtract += children[i].outerHTML.length;
+
+            // Update startIndex (to avoid returning the first occurence if multiple children of same type)
+            start_index = this_index;
+        }
+    }
+
+    /**
+     * Takes a cursor and finds the cursors children for the remove functionality
+     */
+
+    var find_child_elements_remove = function(cursor) {
         // Get the start index
         var start_index = 0;
         var subtract = 0;
 
         // Get all direct children of the current element
-        var children = $(current_cursor.selector).children();
+        var children = $(cursor.selector).children();
 
-        current_cursor.children = [];
+        cursor.children = [];
 
         // Loop all the direct children
         for (var i = 0; i < children.length; i++) {
             // Get the current index
-            var this_index = $(current_cursor.selector).html().substr(start_index).indexOf(children[i].outerHTML);
+            var this_index = $(cursor.selector).html().substr(start_index).indexOf(children[i].outerHTML);
 
             // Add to cursor
-            current_cursor.children.push({
+            cursor.children.push({
                 'position': start_index + this_index - subtract,
                 'current_position': 0,
-                'selector': current_cursor.selector + ' > *:eq(0)',
+                'selector': cursor.selector + ' > *:eq(0)',
                 'current': false,
                 'skip': children[i].innerHTML.length === 0,
-                'children': null,
+                'children': null
             });
 
             // Add to subtract
