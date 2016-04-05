@@ -3,9 +3,6 @@
  */
 
 var Translate = (function () {
-    
-    // Hold the interval for the translation
-    var translate_interval;
 
     // Holds all the translation data
     var translate_data;
@@ -31,7 +28,7 @@ var Translate = (function () {
         translate_tick_index = 0;
         
         // Start the interval
-        translate_interval = setInterval(translate_tick, translate_tick_timeout);
+        setTimeout(translate_tick, translate_tick_timeout);
     };
 
     /**
@@ -69,8 +66,8 @@ var Translate = (function () {
         }
         
         // Check if we should break out of the ticks
-        if (!still_running) {
-            clearInterval(translate_interval);
+        if (still_running) {
+            setTimeout(translate_tick, translate_tick_timeout);
         }
 
         // Increase tick index by one
@@ -431,38 +428,41 @@ var Translate = (function () {
             // Shortcut
             var current_string = strings[i];
             
-            // Build the current data object
-            translate_data.push({
-                'finished': false,
-                'cursors': {
-                    'remove': [
-                        {
-                            'position': 0,
-                            'current_position': 0,
-                            'selector': current_string.selector + ' span.remove',
-                            'current': true,
-                            'skip': false,
-                            'children': null
-                        }  
-                    ],
-                    'add': [
-                        {
-                            'position': 0,
-                            'current_position': 0,
-                            'selector': current_string.selector + ' span.add',
-                            'to_selector': 'div',
-                            'current': true,
-                            'skip': false,
-                            'children': null,
-                            'markup_inside': current_string[lang]
-                        }  
-                    ],
-                },
-                'selector': current_string.selector,
-                'original': $(current_string.selector).html(),
-                'to': current_string[lang],
-                'interval': null
-            })
+            // Make sure selector is valid
+            if ($(current_string.selector).length > 0) {
+                // Build the current data object
+                translate_data.push({
+                    'finished': false,
+                    'cursors': {
+                        'remove': [
+                            {
+                                'position': 0,
+                                'current_position': 0,
+                                'selector': current_string.selector + ' span.remove',
+                                'current': true,
+                                'skip': false,
+                                'children': null
+                            }  
+                        ],
+                        'add': [
+                            {
+                                'position': 0,
+                                'current_position': 0,
+                                'selector': current_string.selector + ' span.add',
+                                'to_selector': 'div',
+                                'current': true,
+                                'skip': false,
+                                'children': null,
+                                'markup_inside': current_string[lang]
+                            }  
+                        ],
+                    },
+                    'selector': current_string.selector,
+                    'original': $(current_string.selector).html(),
+                    'to': current_string[lang],
+                    'interval': null
+                });
+            }
         }
     }
 
