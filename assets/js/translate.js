@@ -8,10 +8,13 @@ var Translate = (function () {
     var translate_data;
 
     // Time it should take to translate everything (in ms)
-    var translate_time = 2000;
+    var translate_time = 5000;
 
     // Translation tick timeout
     var translate_tick_timeout = 4;
+    
+    // Translation interval value
+    var translate_interval = null;
 
     // Keeps track of the current tick index
     var translate_tick_index = 0;
@@ -24,9 +27,6 @@ var Translate = (function () {
      */
 
     var translate = function(lang) {
-        // Debug
-        translate_debug = new Date().getTime();
-        
         // Set the data
         translate_set_data(lang);
 
@@ -44,7 +44,7 @@ var Translate = (function () {
         // Get the current ms
         var translate_start = new Date().getTime();
         
-        // Run a single tick and force all translations to run
+        // Run a single tick
         translate_tick();
         
         // Compute the duration for a single tick
@@ -56,64 +56,46 @@ var Translate = (function () {
      */
 
     var translate_tick = function() {
-        // Used to finish the running if no blocks are translated
-        var still_running = false;
+        // Get the current piece of data
+        var current_data = translate_data[0];
+
+        // Check if we need to calculate interval values
+        if (translate_tick_index === 1) {
+            calculate_tick_interval();
+        }
         
-        // Loop all the data
-        for (var i = 0; i < translate_data.length; i++) {
-            // Shortcut
-            var current_data = translate_data[i];
-
-            // Check if we need to calculate interval values
-            if (translate_tick_index === 1) {
-                calculate_tick_interval(current_data);
+        // Check if we should run this tick
+        if (translate_tick_index === 0 || translate_interval < 1 || (translate_tick_index % translate_interval) === 0) {
+            // Check if we need to handle more than one step (interval lower than 1)
+            if (translate_interval !== null && translate_interval < 1) {
+                // Handle multiple ticks in one call, calculate how many
+                var number_of_ticks_to_batch = Math.ceil(1 / translate_interval);
+                
+                // Run n ticks at once
+                handle_tick(current_data, number_of_ticks_to_batch);
             }
+            else {
+                // We just need to handle one tick
+                handle_tick(current_data, 1);
+            }
+        }
+
+        // Check if we are finished
+        if (translation_finished(current_data)) {
+            // This translation is finished
+            translation_finish(current_data);
             
-            // Only handle translations still running
-            if (!current_data.finished) {
-                // Check if we should run this tick
-                if (translate_tick_index === 0 || current_data.interval < 1 || use_tick(current_data)) {
-                    // Check if we need to handle more than one step (interval lower than 1)
-                    if (current_data.interval !== null && current_data.interval < 1) {
-                        // Handle multiple ticks in one call, calculate how many
-                        var number_of_ticks_to_batch = Math.ceil(1 / current_data.interval);
-                        
-                        // Run n ticks at once
-                        handle_tick(current_data, number_of_ticks_to_batch);
-                    }
-                    else {
-                        // We just need to handle one tick
-                        handle_tick(current_data, 1);
-                    }
-                }
-
-                // Check if we are finished
-                if (!translation_finished(current_data)) {
-                    // Set still running to true to run a new tick
-                    still_running = true;
-                }
-                else {
-                    // This translation is finished
-                    translation_finish(current_data);
-                }
-            }
+            // Remove the current data
+            translate_data.splice(0, 1);
         }
         
         // Increase tick index by one
         translate_tick_index++;
         
         // Check if we should break out of the ticks
-        if (translate_tick_index > 1 && still_running) {
+        if (translate_tick_index > 1 && translate_data.length > 0) {
             setTimeout(translate_tick, translate_tick_timeout);
         }
-    }
-
-    /**
-     * Checks if the current translation data should use the current tick or wait
-     */
-
-    var use_tick = function(data) {
-        return (translate_tick_index % data.interval) === 0;
     }
 
     /**
@@ -124,8 +106,11 @@ var Translate = (function () {
         // Get the number of ticks in total
         var number_of_ticks = translate_time / translation_tick_duration;
 
-        // Get the maximum length of things to remove/add
-        var maximum_handle_length = Math.max(data.original.length, $('<div>' + data.to + '</div>').text().length);
+        // Get the total maximum length of things to remove/add
+        var maximum_handle_length = 0;
+        for (var i = 0; i < translate_data.length; i++) {
+            maximum_handle_length += Math.max(translate_data[i].original.length, $('<div>' + translate_data[i].to + '</div>').text().length);
+        }
 
         // Calculate interval
         var interval = number_of_ticks / maximum_handle_length;
@@ -136,7 +121,7 @@ var Translate = (function () {
         }
 
         // Finally set the interval
-        data.interval = interval;
+        translate_interval = interval;
     }
 
     /**
@@ -145,7 +130,7 @@ var Translate = (function () {
 
     var handle_tick = function(data, inner_ticks) {
         // Check if we should add/remove the container elements
-        if (translate_tick_index === 0) {
+        if (!data.created) {
             // Build the container markup
             build_container_markup(data);
         }
@@ -420,6 +405,9 @@ var Translate = (function () {
 
         // Set the markup to the selector
         $(data.selector).html(markup);
+        
+        // Set created to true
+        data.created = true;
     }
 
     /**
@@ -443,9 +431,6 @@ var Translate = (function () {
      */
 
     var translation_finish = function(data) {
-        // Set finished
-        data.finished = true;
-        
         // Update the final content
         $(data.selector).html(data.to);
     }
@@ -483,7 +468,6 @@ var Translate = (function () {
             if ($(current_string.selector).length > 0) {
                 // Build the current data object
                 translate_data.push({
-                    'finished': false,
                     'cursors': {
                         'remove': [
                             {
@@ -511,7 +495,7 @@ var Translate = (function () {
                     'selector': current_string.selector,
                     'original': $(current_string.selector).html(),
                     'to': current_string[lang],
-                    'interval': null
+                    'created': false
                 });
             }
         }
@@ -551,9 +535,6 @@ var Translate = (function () {
                 'skip': children[i].innerHTML.length === 0,
                 'children': null
             });
-
-            // Add to subtract
-            //subtract += children[i].outerHTML.length;
 
             // Update startIndex (to avoid returning the first occurence if multiple children of same type)
             start_index = this_index;
