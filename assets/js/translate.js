@@ -11,25 +11,45 @@ var Translate = (function () {
     var translate_time = 1000;
 
     // Translation tick timeout
-    var translate_tick_timeout = 5;
+    var translate_tick_timeout = 4;
 
     // Keeps track of the current tick index
     var translate_tick_index = 0;
+    
+    // Keeps track of how long it takes to run a single translation
+    var translation_tick_duration = 0;
     
     /**
      * Start the translation to a language
      */
 
     var translate = function(lang) {
+        // Debug
+        translate_debug = new Date().getTime();
+        
         // Set the data
         translate_set_data(lang);
 
         // Reset tick index
         translate_tick_index = 0;
         
+        // Calibrate the speed of a single tick (estimate)
+        translate_calibrate();
+        
         // Start the interval
         setTimeout(translate_tick, translate_tick_timeout);
     };
+    
+    var translate_calibrate = function() {
+        // Get the current ms
+        var translate_start = new Date().getTime();
+        
+        // Run a single tick and force all translations to run
+        translate_tick();
+        
+        // Compute the duration for a single tick
+        translation_tick_duration = new Date().getTime() - translate_start;
+    }
 
     /**
      * Runs a single tick in the translation
@@ -45,16 +65,26 @@ var Translate = (function () {
             var current_data = translate_data[i];
 
             // Check if we need to calculate interval values
-            if (translate_tick_index === 0) {
+            if (translate_tick_index === 1) {
                 calculate_tick_interval(current_data);
             }
             
             // Only handle translations still running
-            if (!current_data.finished) { 
+            if (!current_data.finished) {
                 // Check if we should run this tick
-                if (use_tick(current_data)) {
-                    // Handle tick
-                    handle_tick(current_data);
+                if (translate_tick_index === 0 || current_data.interval < 1 || use_tick(current_data)) {
+                    // Check if we need to handle more than one step (interval lower than 1)
+                    if (current_data.interval !== null && current_data.interval < 1) {
+                        // Handle multiple ticks in one call, calculate how many
+                        var number_of_ticks_to_batch = Math.ceil(1 / current_data.interval);
+                        
+                        // Run n ticks at once
+                        handle_tick(current_data, number_of_ticks_to_batch);
+                    }
+                    else {
+                        // We just need to handle one tick
+                        handle_tick(current_data, 1);
+                    }
                 }
 
                 // Check if we are finished
@@ -62,16 +92,20 @@ var Translate = (function () {
                     // Set still running to true to run a new tick
                     still_running = true;
                 }
+                else {
+                    // This translation is finished
+                    translation_finish(current_data);
+                }
             }
         }
         
-        // Check if we should break out of the ticks
-        if (still_running) {
-            setTimeout(translate_tick, translate_tick_timeout);
-        }
-
         // Increase tick index by one
         translate_tick_index++;
+        
+        // Check if we should break out of the ticks
+        if (translate_tick_index > 1 && still_running) {
+            setTimeout(translate_tick, translate_tick_timeout);
+        }
     }
 
     /**
@@ -88,13 +122,18 @@ var Translate = (function () {
 
     var calculate_tick_interval = function(data) {
         // Get the number of ticks in total
-        var number_of_ticks = translate_time / translate_tick_timeout;
+        var number_of_ticks = translate_time / translation_tick_duration;
 
         // Get the maximum length of things to remove/add
         var maximum_handle_length = Math.max(data.original.length, $('<div>' + data.to + '</div>').text().length);
 
         // Calculate interval
-        var interval = Math.ceil(number_of_ticks / maximum_handle_length);
+        var interval = number_of_ticks / maximum_handle_length;
+        
+        // If interval is higher than 1 we can just floor the value
+        if (interval > 1) {
+            interval = Math.floor(interval);
+        }
 
         // Finally set the interval
         data.interval = interval;
@@ -104,18 +143,24 @@ var Translate = (function () {
      * Handle a single tick for a running translation
      */
 
-    var handle_tick = function(current_data) {
+    var handle_tick = function(data, inner_ticks) {
         // Check if we should add/remove the container elements
         if (translate_tick_index === 0) {
             // Build the container markup
-            build_container_markup(current_data);
+            build_container_markup(data);
         }
+        
+        for (var i = 0; i < inner_ticks; i++) {
+            // Handle adding of content
+            handle_tick_add(data);
 
-        // Handle adding of content
-        handle_tick_add(current_data);
-
-        // Handle removing of content
-        handle_tick_remove(current_data);        
+            // Handle removing of content
+            handle_tick_remove(data);
+            
+            if (translation_finished(data)) {
+                break;
+            }
+        }
     }
 
     /**
@@ -385,18 +430,24 @@ var Translate = (function () {
         // Validate that remove is empty and that add is the same length as to
         if ($(data.selector + ' span.remove').length === 0 && 
             $(data.cursors.add[0].selector).html().length === data.to.length) {
-            // We are finished!
-            data.finished = true;
-
-            // Parse the content one last time
-            $(data.selector).html(data.to);
-
             // Return true to indicate that we are finished
             return true;
         }
 
         // We are not finished
         return false;
+    }
+    
+    /**
+     * Handles finishing a translation
+     */
+
+    var translation_finish = function(data) {
+        // Set finished
+        data.finished = true;
+        
+        // Update the final content
+        $(data.selector).html(data.to);
     }
 
     /**
