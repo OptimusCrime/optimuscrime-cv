@@ -32,40 +32,52 @@ a:hover, a:hover {
     max-width: 970px;
     margin-top: 40px;
 }
-#about {
+.top {
+    display: flex;
+    flex-flow: row wrap;
+}
+.translation {
+    text-align: right;
+    font-size: 14px;
+    justify-content: center;
+    flex-direction: column;
+    display: flex;
+    padding-right: 22px;
+}
+.about {
     margin: 0 auto;
     border-bottom: 1px solid #ccc;
     padding-bottom: 20px;
 }
-#about h2 {
+.about h2 {
     font-size: 14px;
     line-height: 20px;
     font-style: italic;
     margin-bottom: 14px;
 }
-#story {
+.story {
     font-size: 18px;
     line-height: 30px;
 }
-#contact {
-    padding-top: 72px;
+.contact {
+    padding-top: 19px;
     line-height: 20px;
     font-size: 13px;
     max-width: 420px;
 }
-#contact i {
+.contact i {
     margin-right: 12px;
     position: absolute;
     left: 0px;
     top: 2px;
 }
-#contact strong {
+.contact strong {
     color: #000;
     padding-left: 10px;
 }
-#picture {
+.picture {
     text-align: center;
-    padding-top: 77px;
+    padding-top: 22px;
 }
 .section {
     margin: 0 auto;
@@ -147,24 +159,24 @@ a:hover, a:hover {
      position: absolute;
      left: -50px;
 }
-#footer {
+.footer {
     width: 100%;
     text-align: center;
     padding-bottom: 20px;
     font-size: 12px;
 }
-#footer ul {
+.footer ul {
     list-style-type: none;
 }
-#footer li {
+.footer li {
     display: inline-block;
 }
-#footer li::after {
+.footer li::after {
     content: "::";
     padding-left: 5px;
     padding-right: 5px;
 }
-#footer li:last-child::after {
+.footer li:last-child::after {
     content: none;
 }
 @media(max-width:970px) {
@@ -172,25 +184,33 @@ a:hover, a:hover {
         border-left: none;
         padding-left: 0px;
     }
-    #picture, #contact {
+    .picture, .contact {
         padding-top: 20px;
     }
 }
 @media(max-width:767px) {
-    #picture {
+    .picture {
         padding-top: 20px;
     }
-    #contact {
+    .contact {
         text-align: center;
         max-width: none;
         padding-top: 20px;
     }
-    #contact i {
+    .contact i {
         position: relative;
         top: auto;
         left: auto;
     }
-    #contact strong {
+    .contact strong {
         padding-left: 0px;
+    }
+    .top {
+        flex-direction: column-reverse;
+    }
+    .translation {
+        text-align: left;
+        display: block;
+        padding-right: 0px;
     }
 }
