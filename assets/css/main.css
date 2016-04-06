@@ -32,6 +32,18 @@ a:hover, a:hover {
     max-width: 970px;
     margin-top: 40px;
 }
+.top {
+    display: flex;
+    flex-flow: row wrap;
+}
+.translation {
+    text-align: right;
+    font-size: 14px;
+    justify-content: center;
+    flex-direction: column;
+    display: flex;
+    padding-right: 22px;
+}
 .about {
     margin: 0 auto;
     border-bottom: 1px solid #ccc;
@@ -48,7 +60,7 @@ a:hover, a:hover {
     line-height: 30px;
 }
 .contact {
-    padding-top: 72px;
+    padding-top: 19px;
     line-height: 20px;
     font-size: 13px;
     max-width: 420px;
@@ -65,7 +77,7 @@ a:hover, a:hover {
 }
 .picture {
     text-align: center;
-    padding-top: 77px;
+    padding-top: 22px;
 }
 .section {
     margin: 0 auto;
@@ -192,5 +204,13 @@ a:hover, a:hover {
     }
     .contact strong {
         padding-left: 0px;
+    }
+    .top {
+        flex-direction: column-reverse;
+    }
+    .translation {
+        text-align: left;
+        display: block;
+        padding-right: 0px;
     }
 }

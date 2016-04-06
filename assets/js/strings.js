@@ -5,6 +5,18 @@ var strings = [
      */
     
     {
+        selector: '.translation a'
+        ,en: 'Bytt til norsk'
+        ,no: 'Switch to English'
+    }
+    
+    
+    
+    /**
+     * About
+     */
+    
+    , {
         selector: '.header h2'
         ,en: 'Boy. Freelancer. Student.'
         ,no: 'Gutt. Programmerer. Freelancer. NTNU-student.'

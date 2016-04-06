@@ -3,6 +3,12 @@
  */
 
 var Translate = (function () {
+    
+    // Stores the current language
+    var lang = 'no';
+    
+    // Store the current state
+    var running = false;
 
     // Holds all the translation data
     var translate_data;
@@ -21,6 +27,39 @@ var Translate = (function () {
     
     // Keeps track of how long it takes to run a single translation
     var translation_tick_duration = 0;
+    
+    /**
+     * Listener for click / touch event on translation link
+     */
+    
+    var translate_listener = function(e) {
+        // Handle touch/click correctly
+        e.stopPropagation();
+        e.preventDefault();
+        
+        // Make sure not to fire twice
+        if (e.handled !== true) {
+            // Make sure we are not running
+            if (!running) {
+                // Set running to true
+                running = true;
+                
+                // Swap language
+                if (lang === 'no') {
+                    lang = 'en';
+                }
+                else {
+                    lang = 'no';
+                }
+                
+                // Call the translation
+                translate(lang);
+            }
+            
+            // Make sure not to run twice
+            e.handled = true;
+        }
+    }
     
     /**
      * Start the translation to a language
@@ -95,6 +134,11 @@ var Translate = (function () {
         // Check if we should break out of the ticks
         if (translate_tick_index > 1 && translate_data.length > 0) {
             setTimeout(translate_tick, translate_tick_timeout);
+        }
+        
+        // Check if we are all finished
+        if (translate_tick_index > 1 && translate_data.length === 0) {
+            running = false;
         }
     }
 
@@ -589,8 +633,7 @@ var Translate = (function () {
          */
 
         init: function () {
-            // WIP
-            translate('en');
+            $('.translation').on('touchstart click', 'a', translate_listener);
         }
     }
 })();
