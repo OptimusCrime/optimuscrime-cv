@@ -8,7 +8,7 @@ var Translate = (function () {
     var translate_data;
 
     // Time it should take to translate everything (in ms)
-    var translate_time = 1000;
+    var translate_time = 2000;
 
     // Translation tick timeout
     var translate_tick_timeout = 4;
@@ -543,7 +543,7 @@ var Translate = (function () {
             cursor.children.push({
                 'position': start_index + this_index - subtract,
                 'current_position': 0,
-                'selector': cursor.selector + ' > *:eq(0)',
+                'selector': cursor.selector + ' > *:eq(' + i + ')',
                 'to_selector': 'div',
                 'markup': children[i].outerHTML,
                 'markup_inside': children[i].innerHTML,
@@ -553,7 +553,7 @@ var Translate = (function () {
             });
 
             // Add to subtract
-            subtract += children[i].outerHTML.length;
+            //subtract += children[i].outerHTML.length;
 
             // Update startIndex (to avoid returning the first occurence if multiple children of same type)
             start_index = this_index;
