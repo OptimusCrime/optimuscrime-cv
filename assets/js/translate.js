@@ -8,7 +8,7 @@ var Translate = (function () {
     var translate_data;
 
     // Time it should take to translate everything (in ms)
-    var translate_time = 5000;
+    var translate_time = 2500;
 
     // Translation tick timeout
     var translate_tick_timeout = 4;
@@ -81,7 +81,7 @@ var Translate = (function () {
         }
 
         // Check if we are finished
-        if (translation_finished(current_data)) {
+        if (current_data.created && translation_finished(current_data)) {
             // This translation is finished
             translation_finish(current_data);
             
