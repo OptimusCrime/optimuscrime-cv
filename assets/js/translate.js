@@ -14,7 +14,7 @@ var Translate = (function () {
     var translate_data;
 
     // Time it should take to translate everything (in ms)
-    var translate_time = 5000;
+    var translate_time = 15000;
 
     // Translation tick timeout
     var translate_tick_timeout = 4;
