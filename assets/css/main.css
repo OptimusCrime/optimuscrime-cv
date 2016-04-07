@@ -167,6 +167,7 @@ a:hover, a:hover {
 }
 .footer ul {
     list-style-type: none;
+    padding: 0px;
 }
 .footer li {
     display: inline-block;
