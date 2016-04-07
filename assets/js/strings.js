@@ -38,13 +38,13 @@ var strings = [
         ,en: 'Education'
         ,no: 'Utdanning'
     }, {
-        selector: '.translate-education-master-title'
-        ,en: 'Master in Artificial Intelligence'
-        ,no: 'Master i Kunstig Intelligens'
-    }, {
         selector: '.translate-education-master-school'
         ,en: '<a href="https://ntnu.edu" target="_blank">Norwegian University of Science and Technology</a>'
         ,no: '<a href="https://ntnu.no" target="_blank">Norges Teknisk-Naturvitenskapelige Universitet</a>'
+    }, {
+        selector: '.translate-education-master-title'
+        ,en: 'Master in Artificial Intelligence'
+        ,no: 'Master i Kunstig Intelligens'
     }, {
         selector: '.translate-education-master-duration'
         ,en: '2015 &ndash; Present'
@@ -60,14 +60,14 @@ var strings = [
      */
 
     , {
+        selector: '.translate-education-bachelor-school'
+        ,en: '<a href="https://ntnu.edu" target="_blank">Norwegian University of Science and Technology</a>'
+        ,no: '<a href="https://ntnu.no" target="_blank">Norges Teknisk-Naturvitenskapelige Universitet</a>'
+    }, {
         selector: '.translate-education-bachelor-title'
         ,en: 'Bachelor\'s degree in Informatics'
         ,no: 'Bachelor i Informatikk'
         
-    }, {
-        selector: '.translate-education-bachelor-school'
-        ,en: '<a href="https://ntnu.edu" target="_blank">Norwegian University of Science and Technology</a>'
-        ,no: '<a href="https://ntnu.no" target="_blank">Norges Teknisk-Naturvitenskapelige Universitet</a>'
     }, {
         selector: '.translate-education-bachelor-description p'
         ,en: 'Taken optiona courses which inclused artificial intelligence, semantic web, web technologies, operating systems, data warehouse and data minig, information retrieval, and software security.'
