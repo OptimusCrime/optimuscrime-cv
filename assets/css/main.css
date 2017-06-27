@@ -95,9 +95,10 @@ a:hover, a:hover {
     margin-right: 120px;
 }
 .section h4 {
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     font-size: 15px;
     color: #3c3c3c;
+    padding-top: 6px;
 }
 .section p {
     margin-bottom: 20px;
@@ -115,6 +116,9 @@ a:hover, a:hover {
     margin-bottom: 25px;
     position: relative;
     border-left: 1px solid #ccc;
+}
+.description p:first-child {
+    padding-top: 3px;
 }
 .icon-ntnu::before {
      content: url('gfx/icons/ntnu.png');
