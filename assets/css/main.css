@@ -36,14 +36,6 @@ a:hover, a:hover {
     display: flex;
     flex-flow: row wrap;
 }
-.translation {
-    text-align: right;
-    font-size: 14px;
-    justify-content: center;
-    flex-direction: column;
-    display: flex;
-    padding-right: 22px;
-}
 .about {
     margin: 0 auto;
     border-bottom: 1px solid #ccc;
@@ -208,10 +200,5 @@ a:hover, a:hover {
     }
     .top {
         flex-direction: column-reverse;
-    }
-    .translation {
-        text-align: left;
-        display: block;
-        padding-right: 0px;
     }
 }
