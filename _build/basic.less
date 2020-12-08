@@ -1,0 +1,65 @@
+@import "./variables.less";
+
+* {
+    box-sizing: border-box;
+}
+body {
+    font: 14px/20px Georgia, "Times New Roman", Times, serif;
+    color: @font-color;
+    background-image: url("paperfiber.png");
+    margin: 0;
+}
+div {
+    position: relative;
+}
+p {
+    margin: 0 0 10px;
+    line-height: 23px;
+}
+a {
+    color: @link-color;
+    text-decoration: underline;
+}
+p a {
+    color: @link-color;
+    text-decoration: none;
+}
+p a:hover {
+    text-decoration: underline;
+}
+h1, h2, h3, h4 {
+    font-weight: 500;
+    color: @heading-color;
+}
+h1 {
+    font-size: 41px;
+    line-height: 50px;
+    margin: 0;
+}
+h2 {
+    font-size: 27px;
+    line-height: 30px;
+
+    @media(min-width: @breakpoint-lg) {
+        margin: 0;
+    }
+}
+h3 {
+    font-size: 27px;
+    line-height: 30px;
+    margin: 0 0 15px;
+    font-style: italic;
+}
+h3 a {
+    text-decoration: none;
+}
+h3 a:hover {
+    text-decoration: underline;
+}
+h4 {
+    font-size: 16px;
+    margin: 0;
+}
+a:hover, a:hover {
+    text-decoration: none;
+}

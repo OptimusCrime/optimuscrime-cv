@@ -1,0 +1,62 @@
+@import "./basic.less";
+@import "./layout.less";
+
+@import "./about.less";
+@import "./keywords.less";
+@import "./timeline.less";
+
+.item {
+    padding-top: 15px;
+    position: relative;
+}
+.item h3 {
+    line-height: 27px;
+    font-style: italic;
+}
+.item img {
+    position: absolute;
+    left: -50px;
+    width: 35px;
+    height: auto;
+}
+.item__positions {
+    padding-bottom: 10px;
+}
+.item__position {
+    padding-bottom: 10px;
+    padding-left: 10px;
+}
+.item__position span {
+    color: #848484;
+}
+
+@media(min-width: 992px) {
+    .contact .row {
+        padding: 0 15px;
+        flex-direction: column;
+    }
+    .row__content {
+        display: flex;
+        flex-direction: row;
+        padding-top: 40px;
+    }
+    .col__section--title {
+        flex-basis: 25%;
+        padding-right: 60px;
+    }
+    .col__section--items {
+        flex-basis: 75%;
+    }
+    .item {
+        padding-left: 20px;
+        padding-top: 0;
+        margin-bottom: 25px;
+        border-left: 1px solid @line-color;
+    }
+    .item svg {
+        display: block;
+    }
+    .item__position {
+        padding-left: 20px;
+    }
+}

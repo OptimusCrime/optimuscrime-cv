@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 200 200"
+   version="1.1"
+   id="svg3930"
+   sodipodi:docname="ntnu.svg"
+   width="200"
+   height="200"
+   style="fill:#848484"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata3936">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3934" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview3932"
+     showgrid="false"
+     inkscape:zoom="1"
+     inkscape:cx="49.653571"
+     inkscape:cy="181.76878"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg3930" />
+  <path
+     class="st0"
+     d="M 174.06579,0.01118721 H 25.934216 C 11.738274,0.01118721 0.01119043,11.738271 0.01119043,25.934213 V 174.06578 c 0,14.19595 11.72708357,25.92303 25.92302557,25.92303 H 174.06579 c 14.19593,0 25.92302,-11.72708 25.92302,-25.92303 V 25.934213 c 0,-14.195942 -11.72709,-25.92302579 -25.92302,-25.92302579 z M 148.75998,148.14276 H 50.005598 V 49.388379 h 98.754382 z"
+     id="path3926"
+     inkscape:connector-curvature="0"
+     style="clip-rule:evenodd;fill-rule:evenodd;stroke-width:6.17214918" />
+  <circle
+     class="st0"
+     cx="16"
+     cy="184"
+     r="6.4000001"
+     id="circle3928"
+     style="clip-rule:evenodd;fill-rule:evenodd" />
+</svg>

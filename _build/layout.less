@@ -1,0 +1,53 @@
+@import "./variables.less";
+
+.container {
+    margin: 0 auto 0;
+
+    @media (min-width: @breakpoint-md) {
+        width: 750px;
+    }
+    @media (min-width: @breakpoint-lg) {
+        width: 970px;
+    }
+}
+
+.row {
+    display: flex;
+    flex-direction: column;
+
+    // TODO: Fix responsive stuff
+
+    &--name {
+        margin: 40px 0 @default-spacing;
+
+        h1 {
+            color: @highlight-color;
+        }
+    }
+
+    &--about {
+        margin: 0 auto;
+        padding-bottom: 40px;
+        display: flex;
+
+        @media (min-width: @breakpoint-md) {
+            flex-direction: row;
+        }
+    }
+
+    &--line, &--timeline {
+        border-bottom: 1px solid @line-color;
+        padding-bottom: @line-spacing;
+        margin-bottom: @line-spacing;
+    }
+
+    &--section {
+        &:last-child {
+            border-bottom: none;
+
+            > div .item:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
